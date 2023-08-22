@@ -3,8 +3,8 @@ package com.springframework.boot.onlinebookstore.service.impl;
 import com.springframework.boot.onlinebookstore.model.Book;
 import com.springframework.boot.onlinebookstore.repository.BookRepository;
 import com.springframework.boot.onlinebookstore.service.BookService;
-import org.springframework.stereotype.Service;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class BookServiceImpl implements BookService {
