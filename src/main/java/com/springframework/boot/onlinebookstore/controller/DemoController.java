@@ -10,4 +10,9 @@ public class DemoController {
     public String showHello() {
         return "hello guys";
     }
+
+    @GetMapping("/bye")
+    public String showBye() {
+        return "Bye guys";
+    }
 }
