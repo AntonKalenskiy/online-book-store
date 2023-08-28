@@ -2,10 +2,9 @@ package com.springframework.boot.onlinebookstore.repository.book.spec;
 
 import com.springframework.boot.onlinebookstore.model.Book;
 import com.springframework.boot.onlinebookstore.repository.SpecificationProvider;
+import java.util.Arrays;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 @Component
 public class AuthorSpecificationProvider implements SpecificationProvider<Book> {
@@ -16,6 +15,7 @@ public class AuthorSpecificationProvider implements SpecificationProvider<Book> 
 
     @Override
     public Specification<Book> getSpecification(String[] params) {
-        return (root, query, criteriaBuilder) -> root.get("author").in(Arrays.stream(params).toArray());
+        return (root, query, criteriaBuilder) -> root.get("author")
+                .in(Arrays.stream(params).toArray());
     }
 }
