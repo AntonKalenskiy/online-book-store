@@ -1,6 +1,7 @@
 package com.springframework.boot.onlinebookstore.controller;
 
 import com.springframework.boot.onlinebookstore.dto.BookDto;
+import com.springframework.boot.onlinebookstore.dto.BookSearchParameters;
 import com.springframework.boot.onlinebookstore.dto.CreateBookRequestDto;
 import com.springframework.boot.onlinebookstore.service.BookService;
 import java.util.List;
@@ -47,5 +48,10 @@ public class BookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         bookService.deleteById(id);
+    }
+
+    @GetMapping("/search")
+    public List<BookDto> search(BookSearchParameters searchParameters) {
+        return bookService.search(searchParameters);
     }
 }
