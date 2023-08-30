@@ -29,8 +29,8 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    @Operation(summary = "Get all books", description = "Get all available books. " +
-            "Includes pagination and sorting")
+    @Operation(summary = "Get all books", description = "Get all available books. "
+            + "Includes pagination and sorting")
     public List<BookDto> getBooks(Pageable pageable) {
         return bookService.findAll(pageable);
     }
@@ -62,8 +62,8 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Search book by parameters", description = "Search book by parameters. " +
-            "Includes pagination and sorting")
+    @Operation(summary = "Search book by parameters", description = "Search book by parameters. "
+            + "Includes pagination and sorting")
     public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
         return bookService.search(searchParameters,pageable);
     }
