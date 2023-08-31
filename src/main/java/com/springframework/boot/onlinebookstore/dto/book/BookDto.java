@@ -1,4 +1,4 @@
-package com.springframework.boot.onlinebookstore.dto;
+package com.springframework.boot.onlinebookstore.dto.book;
 
 import java.math.BigDecimal;
 import lombok.Data;

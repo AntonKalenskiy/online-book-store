@@ -1,8 +1,8 @@
 package com.springframework.boot.onlinebookstore.controller;
 
-import com.springframework.boot.onlinebookstore.dto.BookDto;
-import com.springframework.boot.onlinebookstore.dto.BookSearchParameters;
-import com.springframework.boot.onlinebookstore.dto.CreateBookRequestDto;
+import com.springframework.boot.onlinebookstore.dto.book.BookDto;
+import com.springframework.boot.onlinebookstore.dto.book.BookSearchParameters;
+import com.springframework.boot.onlinebookstore.dto.book.CreateBookRequestDto;
 import com.springframework.boot.onlinebookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,6 +1,6 @@
 package com.springframework.boot.onlinebookstore.repository.book;
 
-import com.springframework.boot.onlinebookstore.dto.BookSearchParameters;
+import com.springframework.boot.onlinebookstore.dto.book.BookSearchParameters;
 import com.springframework.boot.onlinebookstore.model.Book;
 import com.springframework.boot.onlinebookstore.repository.SpecificationBuilder;
 import com.springframework.boot.onlinebookstore.repository.SpecificationProviderManager;
