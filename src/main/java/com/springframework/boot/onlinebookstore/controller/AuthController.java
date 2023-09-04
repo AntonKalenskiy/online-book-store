@@ -6,6 +6,7 @@ import com.springframework.boot.onlinebookstore.exception.RegistrationException;
 import com.springframework.boot.onlinebookstore.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request)
             throws RegistrationException {
         return userService.register(request);

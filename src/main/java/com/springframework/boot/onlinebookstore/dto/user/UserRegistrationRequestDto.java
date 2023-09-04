@@ -1,14 +1,16 @@
 package com.springframework.boot.onlinebookstore.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.Email;
+import com.springframework.boot.onlinebookstore.validation.Email;
+import com.springframework.boot.onlinebookstore.validation.FieldMatch;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-
+@FieldMatch(first = "password", second = "repeatPassword",
+        message = "Password and repeatPassword must be the same")
 public class UserRegistrationRequestDto {
     @NotBlank
     @Email

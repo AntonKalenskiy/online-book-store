@@ -26,12 +26,13 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
-            throw new RegistrationException("Unable to complete registration. User with such email already exists.");
+            throw new RegistrationException("Unable to complete registration. "
+                    + "User with such email already exists.");
         }
         User user = new User();
         user.setEmail(requestDto.getEmail());
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        user.setRoles(Set.of(roleRepository.findByName(Role.RoleName.USER)));
+        user.setRoles(Set.of(roleRepository.findByName(Role.RoleName.ROLE_USER)));
         user.setFirstName(requestDto.getFirstName());
         user.setLastName(requestDto.getLastName());
         user.setShippingAddress(requestDto.getShippingAddress());

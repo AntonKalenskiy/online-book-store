@@ -19,3 +19,7 @@ databaseChangeLog:
       file: db/changelog/changes/09-insert-users-roles.yaml
   - include:
       file: db/changelog/changes/10-set-bcrypt-password.yaml
+  - include:
+      file: db/changelog/changes/11-replace-old-roles-by-new.yaml
+  - include:
+      file: db/changelog/changes/12-replace-old-roles-by-new-2-version.yaml
