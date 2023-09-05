@@ -1,4 +1,6 @@
 package com.springframework.boot.onlinebookstore.dto.user;
 
-public class UserLoginResponseDto {
+import lombok.Data;
+
+public record UserLoginResponseDto(String token) {
 }
