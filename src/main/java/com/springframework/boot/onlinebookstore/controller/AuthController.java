@@ -6,7 +6,6 @@ import com.springframework.boot.onlinebookstore.dto.user.UserRegistrationRequest
 import com.springframework.boot.onlinebookstore.dto.user.UserResponseDto;
 import com.springframework.boot.onlinebookstore.exception.RegistrationException;
 import com.springframework.boot.onlinebookstore.security.AuthenticationService;
-import com.springframework.boot.onlinebookstore.security.JwtAuthenticationFilter;
 import com.springframework.boot.onlinebookstore.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +32,6 @@ public class AuthController {
     @PostMapping("/login")
     @PreAuthorize("hasRole('ROLE_USER')")
     public UserLoginResponseDto login(@RequestBody UserLoginRequestDto requestDto) {
-      return authenticationService.authenticate(requestDto);
+        return authenticationService.authenticate(requestDto);
     }
 }
