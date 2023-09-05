@@ -23,14 +23,12 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request)
             throws RegistrationException {
         return userService.register(request);
     }
 
     @PostMapping("/login")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public UserLoginResponseDto login(@RequestBody UserLoginRequestDto requestDto) {
         return authenticationService.authenticate(requestDto);
     }
