@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-categories
+      author: anton_kalenskyi
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column: {name: name, value: "Fiction"}
+              - column: {name: description, value: "Fiction books"}
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: name, value: "Mystery" }
+              - column: { name: description, value: "Mystery books" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: name, value: "Science Fiction" }
+              - column: { name: description, value: "Science Fiction books" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: name, value: "Non-Fiction" }
+              - column: { name: description, value: "Non-Fiction books" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: name, value: "Fantasy" }
+              - column: { name: description, value: "Fantasy books" }
+

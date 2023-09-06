@@ -12,4 +12,7 @@ public interface BookMapper {
 
     Book toModel(CreateBookRequestDto requestDto);
 
+    BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
+
+
 }

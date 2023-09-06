@@ -25,3 +25,5 @@ databaseChangeLog:
       file: db/changelog/changes/12-replace-old-roles-by-new-2-version.yaml
   - include:
       file: db/changelog/changes/13-create-categories-and-books_categories-tables.yaml
+  - include:
+      file: db/changelog/changes/14-insert-categories.yaml
