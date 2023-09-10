@@ -89,26 +89,3 @@ databaseChangeLog:
                     primaryKey: true
                     references: cart_items(id)
                     foreignKeyName: fk_shopping_carts_cart_items_cart_item_id
-
-
-#  - changeSet:
-#      id: create-cart-items-books-table
-#      author: anton_kalenskyi
-#      changes:
-#        - createTable:
-#            tableName: cart_items_books
-#            columns:
-#              - column:
-#                  name: cart_item_id
-#                  type: bigint
-#                  constraints:
-#                    primaryKey: true
-#                    references: cart_items(id)
-#                    foreignKeyName: fk_cart_items_books_cart_item_id
-#              - column:
-#                  name: book_id
-#                  type: bigint
-#                  constraints:
-#                    primaryKey: true
-#                    references: books(id)
-#                    foreignKeyName: fk_cart_items_books_book_id
