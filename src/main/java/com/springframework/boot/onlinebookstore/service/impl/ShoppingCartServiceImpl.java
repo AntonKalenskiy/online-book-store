@@ -8,8 +8,8 @@ import com.springframework.boot.onlinebookstore.exception.EntityNotFoundExceptio
 import com.springframework.boot.onlinebookstore.model.CartItem;
 import com.springframework.boot.onlinebookstore.model.ShoppingCart;
 import com.springframework.boot.onlinebookstore.model.User;
-import com.springframework.boot.onlinebookstore.repository.cartitem.CartItemRepository;
 import com.springframework.boot.onlinebookstore.repository.book.BookRepository;
+import com.springframework.boot.onlinebookstore.repository.cartitem.CartItemRepository;
 import com.springframework.boot.onlinebookstore.repository.shoppingcart.ShoppingCartRepository;
 import com.springframework.boot.onlinebookstore.service.ShoppingCartService;
 import java.util.HashSet;

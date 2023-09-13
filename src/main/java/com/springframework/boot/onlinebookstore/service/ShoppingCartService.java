@@ -4,10 +4,6 @@ import com.springframework.boot.onlinebookstore.dto.cartitem.CreateCartItemReque
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.CreateShoppingCartRequestDto;
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.ShoppingCartDto;
 import com.springframework.boot.onlinebookstore.model.User;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-
-import java.util.Optional;
 
 public interface ShoppingCartService {
 

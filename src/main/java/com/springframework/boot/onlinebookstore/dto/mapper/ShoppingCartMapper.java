@@ -4,10 +4,8 @@ import com.springframework.boot.onlinebookstore.config.MapperConfig;
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.CreateShoppingCartRequestDto;
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.ShoppingCartDto;
 import com.springframework.boot.onlinebookstore.model.ShoppingCart;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class, uses = CartItemMapper.class)
 
