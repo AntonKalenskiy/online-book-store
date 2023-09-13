@@ -21,11 +21,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @Column(nullable = false)
     @JoinColumn(name = "user_id")
     private User user;
     @Enumerated(EnumType.STRING)
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private Status status;
     @Column(nullable = false)
     private BigDecimal total;
