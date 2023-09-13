@@ -72,6 +72,6 @@ public class BookController {
     @Operation(summary = "Search book by parameters", description = "Search book by parameters. "
             + "Includes pagination and sorting")
     public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
-        return bookService.search(searchParameters,pageable);
+        return bookService.search(searchParameters, pageable);
     }
 }
