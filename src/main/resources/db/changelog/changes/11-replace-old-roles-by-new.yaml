@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: remove-previous-roles
+      author: ваш_автор
+      changes:
+        - delete:
+            tableName: users_roles
+            where: role_id = (SELECT id FROM roles WHERE name = 'ADMIN')
+        - delete:
+            tableName: users_roles
+            where: role_id = (SELECT id FROM roles WHERE name = 'USER')
+
+  - changeSet:
+      id: remove-previous-roles
+      author: anton_kalenskyi
+      changes:
+        - delete:
+            tableName: roles
+            where: name = 'ADMIN'
+        - delete:
+            tableName: roles
+            where: name = 'USER'
+
+  - changeSet:
+      id: insert-new-roles
+      author: anton_kalenskyi
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: name, value: "ADMIN_ROLE" }
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: name, value: "USER_ROLE" }
+

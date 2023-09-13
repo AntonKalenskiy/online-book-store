@@ -44,6 +44,18 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<Object> handleRegistrationException(
+            RegistrationException ex,
+            WebRequest request) {
+        body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT);
+        String errorMessage = ex.getMessage();
+        body.put("error", errorMessage);
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
@@ -53,7 +65,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.BAD_REQUEST);
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+        List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(this::getErrorMessage)
                 .toList();
         body.put("errors", errors);

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: anton_kalenskyi
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: email, value: "batman@gothem.org"}
+              - column: {name: password, value: "YmF0bWFuMTIz"}
+              - column: {name: first_name, value: "Bruce"}
+              - column: {name: last_name, value: "Wayne"}
+              - column: {name: shipping_address, value: "Cave N5"}
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "ironman@newyork.org" }
+              - column: { name: password, value: "aXJvbm1hbjEyMw==" }
+              - column: { name: first_name, value: "Tony" }
+              - column: { name: last_name, value: "Stark" }
+              - column: { name: shipping_address, value: "Stark Tower" }

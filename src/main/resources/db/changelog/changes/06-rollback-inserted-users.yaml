@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: rollback-inserted-users
+      author: anton_kalenskyi
+      changes:
+        - delete:
+            tableName: users
+            where:
+              or:
+                - and:
+                    - column:
+                        name: email
+                        value: "batman@gothem.org"
+                    - column:
+                        name: password
+                        value: "YmF0bWFuMTIz"
+                - and:
+                    - column:
+                        name: email
+                        value: "ironman@newyork.org"
+                    - column:
+                        name: password
+                        value: "aXJvbm1hbjEyMw=="
