@@ -17,7 +17,7 @@ databaseChangeLog:
                   name: user_id
                   type: bigint
                   constraints:
-                    primaryKey: true
+#                    primaryKey: true
                     references: users(id)
                     foreignKeyName: fk_shopping_carts_user_id
               - column:
@@ -46,14 +46,14 @@ databaseChangeLog:
                   name: shopping_cart_id
                   type: bigint
                   constraints:
-                    primaryKey: true
+#                    primaryKey: true
                     references: shopping_carts(id)
                     foreignKeyName: fk_cart_items_shopping_cart_id
               - column:
                   name: book_id
                   type: bigint
                   constraints:
-                    primaryKey: true
+#                    primaryKey: true
                     references: books(id)
                     foreignKeyName: fk_cart_items_book_id
               - column:

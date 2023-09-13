@@ -7,10 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
 
-    @Query("SELECT DISTINCT sc FROM ShoppingCart sc LEFT JOIN FETCH sc.cartItems ci "
+    @Query("SELECT DISTINCT sc FROM ShoppingCart sc LEFT JOIN FETCH sc.user u LEFT JOIN FETCH u.roles LEFT JOIN FETCH sc.cartItems ci "
             + "WHERE sc.user = :user")
-    ShoppingCart findByUser(@Param("user") User user);
+    Optional<ShoppingCart> findByUser(@Param("user") User user);
 }
