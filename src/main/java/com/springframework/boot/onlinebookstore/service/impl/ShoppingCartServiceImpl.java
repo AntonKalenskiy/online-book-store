@@ -36,12 +36,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto addBookToCart(CreateShoppingCartRequestDto shoppingCartRequestDto,
                                          User user) {
         ShoppingCart shoppingCart = findShoppingCartByUser(user);
-        CartItem savedCartItemInDb = createNewCartItem(shoppingCartRequestDto, shoppingCart);
-        Set<CartItem> newSetOfItems = shoppingCart.getCartItems();
-        newSetOfItems.add(savedCartItemInDb);
-        shoppingCart.setCartItems(newSetOfItems);
-        ShoppingCart savedShoppingCartInDB = shoppingCartRepository.save(shoppingCart);
-        return shoppingCartMapper.toDto(savedShoppingCartInDB);
+        Optional<CartItem> itemOptional = findCartItemByBookId(shoppingCartRequestDto,
+                shoppingCart);
+        if (itemOptional.isEmpty()) {
+            CartItem savedCartItemInDb = createNewCartItem(shoppingCartRequestDto, shoppingCart);
+            setNewCartItemToSetOfCartItems(savedCartItemInDb, shoppingCart);
+            ShoppingCart savedShoppingCartInDB = shoppingCartRepository.save(shoppingCart);
+            return shoppingCartMapper.toDto(savedShoppingCartInDB);
+        } else {
+            CartItem cartItem = itemOptional.get();
+            cartItem.setQuantity(shoppingCartRequestDto.getQuantity());
+            cartItemRepository.save(cartItem);
+            return shoppingCartMapper.toDto(shoppingCart);
+        }
     }
 
     @Override
@@ -93,6 +100,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ));
         cartItem.setShoppingCart(shoppingCart);
         return cartItemRepository.save(cartItem);
+    }
+
+    private Optional<CartItem> findCartItemByBookId(
+            CreateShoppingCartRequestDto shoppingCartRequestDto,
+            ShoppingCart shoppingCart) {
+        Set<CartItem> cartItems = shoppingCart.getCartItems();
+        return cartItems.stream()
+                .filter(cartItem -> cartItem.getBook().getId()
+                        .equals(shoppingCartRequestDto.getBookId()))
+                .findFirst();
+    }
+
+    private void setNewCartItemToSetOfCartItems(CartItem savedCartItemInDb,
+                                                ShoppingCart shoppingCart) {
+        Set<CartItem> newSetOfItems = shoppingCart.getCartItems();
+        newSetOfItems.add(savedCartItemInDb);
+        shoppingCart.setCartItems(newSetOfItems);
     }
 
     private Optional<CartItem> findCartItemById(ShoppingCart shoppingCart,

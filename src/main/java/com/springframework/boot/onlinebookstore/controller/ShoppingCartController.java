@@ -3,10 +3,9 @@ package com.springframework.boot.onlinebookstore.controller;
 import com.springframework.boot.onlinebookstore.dto.cartitem.CreateCartItemRequestDto;
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.CreateShoppingCartRequestDto;
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.ShoppingCartDto;
-import com.springframework.boot.onlinebookstore.exception.EntityNotFoundException;
 import com.springframework.boot.onlinebookstore.model.User;
-import com.springframework.boot.onlinebookstore.repository.user.UserRepository;
 import com.springframework.boot.onlinebookstore.service.ShoppingCartService;
+import com.springframework.boot.onlinebookstore.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
         = "endpoints for managing shopping carts")
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -78,8 +77,6 @@ public class ShoppingCartController {
 
     private User findUser(Authentication authentication) {
         String email = authentication.getName();
-        return userRepository.findByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("User with such email doesn't exist")
-        );
+        return userService.findByEmail(email);
     }
 }
