@@ -1,5 +1,6 @@
 package com.springframework.boot.onlinebookstore.service.impl;
 
+import com.springframework.boot.onlinebookstore.dto.mapper.OrderItemMapper;
 import com.springframework.boot.onlinebookstore.dto.mapper.OrderMapper;
 import com.springframework.boot.onlinebookstore.dto.order.CreateOrderRequestDtoForAdmin;
 import com.springframework.boot.onlinebookstore.dto.order.CreateOrderRequestDtoForUser;
@@ -7,21 +8,24 @@ import com.springframework.boot.onlinebookstore.dto.order.OrderDto;
 import com.springframework.boot.onlinebookstore.dto.orderitem.OrderItemDto;
 import com.springframework.boot.onlinebookstore.exception.EntityNotFoundException;
 import com.springframework.boot.onlinebookstore.exception.ShoppingCartNotExistOrEmptyException;
-import com.springframework.boot.onlinebookstore.model.*;
+import com.springframework.boot.onlinebookstore.model.CartItem;
+import com.springframework.boot.onlinebookstore.model.Order;
+import com.springframework.boot.onlinebookstore.model.OrderItem;
+import com.springframework.boot.onlinebookstore.model.ShoppingCart;
+import com.springframework.boot.onlinebookstore.model.User;
 import com.springframework.boot.onlinebookstore.repository.order.OrderRepository;
 import com.springframework.boot.onlinebookstore.repository.orderitem.OrderItemRepository;
 import com.springframework.boot.onlinebookstore.repository.shoppingcart.ShoppingCartRepository;
 import com.springframework.boot.onlinebookstore.service.OrderService;
 import com.springframework.boot.onlinebookstore.service.strategy.StatusStrategy;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final StatusStrategy statusStrategy;
+    private final OrderItemMapper orderItemMapper;
 
     @Override
     public OrderDto save(CreateOrderRequestDtoForUser orderRequestDtoForUser, User user) {
@@ -70,13 +75,24 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
             return orderMapper.toDto(order);
         } else {
-            throw new EntityNotFoundException("Order with such id wasn't found: " + id);
+            throw new EntityNotFoundException("Order with such id: " + id + " wasn't found");
         }
     }
 
     @Override
     public List<OrderItemDto> getAll(User user, Long orderId) {
-        return null;
+        List<Order> orderList = orderRepository.findAllByUser(user);
+        Optional<Order> optionalOrder = orderList.stream()
+                .filter(order -> order.getId().equals(orderId))
+                .findFirst();
+        if (optionalOrder.isPresent()) {
+            List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
+            return orderItems.stream()
+                    .map(orderItemMapper::toDto)
+                    .toList();
+        } else {
+            throw new EntityNotFoundException("Order with such id: " + orderId + " wasn't found");
+        }
     }
 
     @Override

@@ -42,8 +42,8 @@ public class OrderController {
     @GetMapping("/{orderId}/items")
     public List<OrderItemDto> getOrderItems(Authentication authentication,
                                             @PathVariable Long orderId) {
-        return null;
-
+        User user = findUser(authentication);
+        return orderService.getAll(user, orderId);
     }
 
     @GetMapping("/{orderId}/items/{itemId}")
