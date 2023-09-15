@@ -56,6 +56,30 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(StatusNotExistException.class)
+    public ResponseEntity<Object> handleStatusNotExistException(
+            StatusNotExistException ex,
+            WebRequest request) {
+        body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.BAD_REQUEST);
+        String errorMessage = ex.getMessage();
+        body.put("error", errorMessage);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ShoppingCartNotExistOrEmptyException.class)
+    public ResponseEntity<Object> handleShoppingCartNotExistOrEmptyException(
+            ShoppingCartNotExistOrEmptyException ex,
+            WebRequest request) {
+        body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT);
+        String errorMessage = ex.getMessage();
+        body.put("error", errorMessage);
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

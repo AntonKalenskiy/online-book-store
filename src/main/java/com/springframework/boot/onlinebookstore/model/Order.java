@@ -24,10 +24,10 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
     @Enumerated(EnumType.STRING)
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private Status status;
     @Column(nullable = false)
-    private BigDecimal total;
+    private BigDecimal total = BigDecimal.ZERO;
     @Column(nullable = false)
     private LocalDateTime orderDate;
     @Column(nullable = false)
