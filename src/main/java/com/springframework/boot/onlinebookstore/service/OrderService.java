@@ -5,15 +5,13 @@ import com.springframework.boot.onlinebookstore.dto.order.CreateOrderRequestDtoF
 import com.springframework.boot.onlinebookstore.dto.order.OrderDto;
 import com.springframework.boot.onlinebookstore.dto.orderitem.OrderItemDto;
 import com.springframework.boot.onlinebookstore.model.User;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
-
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
     OrderDto save(CreateOrderRequestDtoForUser orderRequestDtoForUser,
                                  User user);
+
     List<OrderDto> findAll(User user, Pageable pageable);
 
     OrderDto updateById(CreateOrderRequestDtoForAdmin orderRequestDtoForAdmin,

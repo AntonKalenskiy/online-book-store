@@ -18,14 +18,12 @@ import com.springframework.boot.onlinebookstore.repository.orderitem.OrderItemRe
 import com.springframework.boot.onlinebookstore.repository.shoppingcart.ShoppingCartRepository;
 import com.springframework.boot.onlinebookstore.service.OrderService;
 import com.springframework.boot.onlinebookstore.service.strategy.StatusStrategy;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,10 +41,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto save(CreateOrderRequestDtoForUser orderRequestDtoForUser, User user) {
         Optional<ShoppingCart> optionalShoppingCart = shoppingCartRepository.findByUser(user);
-        if (optionalShoppingCart.isPresent() && !optionalShoppingCart.get().getCartItems().isEmpty()) {
-            Order savedOrderInDb = createOrder(orderRequestDtoForUser, user);
+        if (optionalShoppingCart.isPresent()
+                && !optionalShoppingCart.get().getCartItems().isEmpty()) {
+            Order savedOrderInDb =
+                    createOrder(orderRequestDtoForUser, user);
             ShoppingCart shoppingCart = optionalShoppingCart.get();
-            Set<OrderItem> orderItems = createOrderItems(savedOrderInDb, shoppingCart.getCartItems());
+            Set<OrderItem> orderItems =
+                    createOrderItems(savedOrderInDb, shoppingCart.getCartItems());
             BigDecimal totalPrice = calculateTotalPrice(orderItems);
             savedOrderInDb.setOrderItems(orderItems);
             savedOrderInDb.setTotal(totalPrice);
@@ -55,7 +56,8 @@ public class OrderServiceImpl implements OrderService {
             shoppingCartRepository.save(shoppingCart);
             return orderMapper.toDto(savedOrderInDb);
         } else {
-            throw new ShoppingCartNotExistOrEmptyException("User doesn't have a shopping cart or shopping cart is empty");
+            throw new ShoppingCartNotExistOrEmptyException("User doesn't have a shopping cart "
+                    + "or shopping cart is empty");
         }
     }
 
@@ -123,7 +125,8 @@ public class OrderServiceImpl implements OrderService {
         OrderItem orderItem = new OrderItem();
         orderItem.setBook(cartItem.getBook());
         orderItem.setQuantity(cartItem.getQuantity());
-        orderItem.setPrice(cartItem.getBook().getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
+        orderItem.setPrice(cartItem.getBook().getPrice()
+                .multiply(new BigDecimal(orderItem.getQuantity())));
         orderItem.setOrder(order);
         orderItemRepository.save(orderItem);
         return orderItem;
@@ -156,7 +159,8 @@ public class OrderServiceImpl implements OrderService {
                 .filter(orderItem -> orderItem.getId().equals(itemId))
                 .findFirst();
         if (optionalOrderItem.isEmpty()) {
-            throw new EntityNotFoundException("OrderItem with such id: " + itemId + " wasn't found in the order");
+            throw new EntityNotFoundException("OrderItem with such id: "
+                    + itemId + " wasn't found in the order");
         }
     }
 }

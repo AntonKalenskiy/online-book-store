@@ -54,8 +54,9 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Update order status", description
             = "Update order status by id")
-    public OrderDto updateOrderStatus(@PathVariable Long id,
-                                      @RequestBody CreateOrderRequestDtoForAdmin requestDtoForAdmin) {
+    public OrderDto updateOrderStatus(
+            @PathVariable Long id,
+            @RequestBody CreateOrderRequestDtoForAdmin requestDtoForAdmin) {
         return orderService.updateById(requestDtoForAdmin, id);
     }
 
