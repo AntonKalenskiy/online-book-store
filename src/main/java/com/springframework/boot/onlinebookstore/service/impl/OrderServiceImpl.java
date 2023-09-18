@@ -18,13 +18,16 @@ import com.springframework.boot.onlinebookstore.repository.orderitem.OrderItemRe
 import com.springframework.boot.onlinebookstore.repository.shoppingcart.ShoppingCartRepository;
 import com.springframework.boot.onlinebookstore.service.OrderService;
 import com.springframework.boot.onlinebookstore.service.strategy.StatusStrategy;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -57,8 +60,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findAll(User user) {
-        return orderRepository.findAllByUser(user).stream()
+    public List<OrderDto> findAll(User user, Pageable pageable) {
+        return orderRepository.findAllByUser(user, pageable).stream()
                 .map(orderMapper::toDto)
                 .toList();
     }
@@ -80,26 +83,23 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderItemDto> getAll(User user, Long orderId) {
-        List<Order> orderList = orderRepository.findAllByUser(user);
-        Optional<Order> optionalOrder = orderList.stream()
-                .filter(order -> order.getId().equals(orderId))
-                .findFirst();
-        if (optionalOrder.isPresent()) {
-            List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
-            return orderItems.stream()
-                    .map(orderItemMapper::toDto)
-                    .toList();
-        } else {
-            throw new EntityNotFoundException("Order with such id: " + orderId + " wasn't found");
-        }
+    public List<OrderItemDto> getAll(User user, Long orderId, Pageable pageable) {
+        getOrderByIdOfUser(user, orderId);
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId, pageable);
+        return orderItems.stream()
+                .map(orderItemMapper::toDto)
+                .toList();
     }
 
     @Override
     public OrderItemDto getById(User user, Long orderId, Long itemId) {
-        return null;
+        Order orderById = getOrderByIdOfUser(user, orderId);
+        getOrderItemByIdInOrderByIdOfUser(orderById, itemId);
+        return orderItemMapper.toDto(orderItemRepository.findById(itemId).orElseThrow(
+                () -> new EntityNotFoundException("OrderItem with such id: " + itemId
+                        + " wasn't found in the order")
+        ));
     }
-
 
     private Order createOrder(CreateOrderRequestDtoForUser orderRequestDtoForUser, User user) {
         Order order = new Order();
@@ -135,5 +135,28 @@ public class OrderServiceImpl implements OrderService {
             totalPrice = totalPrice.add(orderItem.getPrice());
         }
         return totalPrice;
+    }
+
+    private Order getOrderByIdOfUser(User user,
+                                     Long orderId) {
+        List<Order> orderList = orderRepository.findAllByUser(user);
+        Optional<Order> optionalOrder = orderList.stream()
+                .filter(order -> order.getId().equals(orderId))
+                .findFirst();
+        if (optionalOrder.isPresent()) {
+            return optionalOrder.get();
+        } else {
+            throw new EntityNotFoundException("Order with such id: "
+                    + orderId + " wasn't found");
+        }
+    }
+
+    private void getOrderItemByIdInOrderByIdOfUser(Order orderById, Long itemId) {
+        Optional<OrderItem> optionalOrderItem = orderById.getOrderItems().stream()
+                .filter(orderItem -> orderItem.getId().equals(itemId))
+                .findFirst();
+        if (optionalOrderItem.isEmpty()) {
+            throw new EntityNotFoundException("OrderItem with such id: " + itemId + " wasn't found in the order");
+        }
     }
 }
