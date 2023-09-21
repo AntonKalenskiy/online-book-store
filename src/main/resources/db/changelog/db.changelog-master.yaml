@@ -29,3 +29,5 @@ databaseChangeLog:
       file: db/changelog/changes/14-insert-categories.yaml
   - include:
       file: db/changelog/changes/15-create-shopping-carts-and-cart-items-tables.yaml
+  - include:
+      file: db/changelog/changes/16-create-orders-order-items-and-orders-order-items-tables.yaml
