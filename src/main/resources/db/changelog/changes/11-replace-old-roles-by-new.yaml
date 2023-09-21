@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: remove-previous-roles
-      author: ваш_автор
+      id: remove-previous-roles1
+      author: anton_kalenskyi
       changes:
         - delete:
             tableName: users_roles

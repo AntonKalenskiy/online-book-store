@@ -15,7 +15,7 @@ services:
     depends_on:
       - mysqldb
     restart: on-failure
-    image: book-store
+    image: store-online
     build: .
     env_file: ./.env
     ports:
@@ -29,4 +29,3 @@ services:
       "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQLDialect"
       }'
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
-
