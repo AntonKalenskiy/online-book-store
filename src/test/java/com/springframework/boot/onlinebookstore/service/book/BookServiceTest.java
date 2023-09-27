@@ -1,5 +1,14 @@
 package com.springframework.boot.onlinebookstore.service.book;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import com.springframework.boot.onlinebookstore.dto.book.BookDto;
 import com.springframework.boot.onlinebookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.springframework.boot.onlinebookstore.dto.book.BookSearchParameters;
@@ -8,41 +17,25 @@ import com.springframework.boot.onlinebookstore.dto.mapper.BookMapper;
 import com.springframework.boot.onlinebookstore.exception.EntityNotFoundException;
 import com.springframework.boot.onlinebookstore.model.Book;
 import com.springframework.boot.onlinebookstore.model.Category;
-import com.springframework.boot.onlinebookstore.repository.SpecificationBuilder;
-import com.springframework.boot.onlinebookstore.repository.SpecificationProviderManager;
 import com.springframework.boot.onlinebookstore.repository.book.BookRepository;
 import com.springframework.boot.onlinebookstore.repository.book.BookSpecificationBuilder;
-import com.springframework.boot.onlinebookstore.repository.book.BookSpecificationProviderManager;
 import com.springframework.boot.onlinebookstore.repository.category.CategoryRepository;
-import com.springframework.boot.onlinebookstore.service.BookService;
 import com.springframework.boot.onlinebookstore.service.impl.BookServiceImpl;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Assertions;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
@@ -53,7 +46,7 @@ public class BookServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
     @Mock
-    private SpecificationBuilder<Book> specificationBuilder;
+    private BookSpecificationBuilder specificationBuilder;
     @InjectMocks
     private BookServiceImpl bookServiceImpl;
 
@@ -63,21 +56,22 @@ public class BookServiceTest {
         //given
         CreateBookRequestDto bookRequestDto = crateBookRequestDto();
         Book book = createBook();
-        BookDto expected = createBookDto();
         Category category = createCategory();
+        BookDto expected = createBookDto();
 
         when(bookMapper.toModel(bookRequestDto)).thenReturn(book);
-        when(categoryRepository.findAllById(any())).thenReturn(List.of(category));
-        when(bookRepository.save(any())).thenReturn(any());
+        when(categoryRepository.findAllById(List.of(1L))).thenReturn(List.of(category));
+        when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expected);
 
         //when
         BookDto actual = bookServiceImpl.save(bookRequestDto);
         //then
         assertEquals(actual.getAuthor(), expected.getAuthor());
-        assertEquals(actual.getTitle(), expected.getTitle());
-        assertEquals(actual.getDescription(), expected.getDescription());
-        verify(bookRepository, times(1)).save(any());
+        verify(bookRepository).save(book);
+        verify(bookMapper).toModel(bookRequestDto);
+        verify(categoryRepository).findById(anyLong());
+        verify(bookMapper).toDto(book);
         verifyNoMoreInteractions(bookRepository, categoryRepository, bookMapper);
     }
 
@@ -87,24 +81,26 @@ public class BookServiceTest {
         //given
         Book book1 = createBook();
         Book book2 = createBook();
+        book2.setId(2L);
         BookDto bookDto1 = createBookDto();
         BookDto bookDto2 = createBookDto();
+        bookDto2.setId(2L);
         Pageable pageable = PageRequest.of(0, 5);
         List<Book> books = List.of(book1, book2);
         Page<Book> bookPage = new PageImpl<>(books, pageable, books.size());
         when(bookRepository.findAll(pageable)).thenReturn(bookPage);
         when(bookMapper.toDto(book1)).thenReturn(bookDto1);
         when(bookMapper.toDto(book2)).thenReturn(bookDto2);
+        List<BookDto> expected = List.of(bookDto1, bookDto2);
         //when
         List<BookDto> bookDtos = bookServiceImpl.findAll(pageable);
         int actual = bookDtos.size();
         //Then
-        assertEquals(actual, bookDtos.size());
+        assertEquals(actual, expected.size());
         verify(bookMapper, times(2)).toDto(any());
         verify(bookRepository, times(1)).findAll(pageable);
         verifyNoMoreInteractions(bookMapper, bookRepository);
     }
-
 
 
     @Test
@@ -146,6 +142,7 @@ public class BookServiceTest {
         Long bookId = 1L;
         bookServiceImpl.deleteById(bookId);
         verify(bookRepository, times(1)).deleteById(bookId);
+        verifyNoMoreInteractions(bookRepository);
     }
 
     @Test
@@ -194,7 +191,7 @@ public class BookServiceTest {
         List<BookDto> actual = bookServiceImpl.search(bookSearchParameters, pageable);
 
         assertEquals(1, actual.size());
-        verify(bookRepository,times(1)).findAll(specification, pageable);
+        verify(bookRepository, times(1)).findAll(specification, pageable);
         for (Book theBook : books) {
             verify(bookMapper, times(1)).toDto(theBook);
         }
@@ -209,20 +206,22 @@ public class BookServiceTest {
         BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds1 = createBookDtoWithoutCategoryIds();
         BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds2 = createBookDtoWithoutCategoryIds();
 
-
         List<Book> booksWithOneCategory = List.of(book1, book2);
-        List<Book>
+        List<BookDtoWithoutCategoryIds> expected = List.of(bookDtoWithoutCategoryIds1,
+                bookDtoWithoutCategoryIds2);
         Pageable pageable = PageRequest.of(0, 2);
 
-
-
         when(bookRepository.findAllByCategoryId(categoryId, pageable)).thenReturn(booksWithOneCategory);
-        when(bookMapper.toDto(any())).thenReturn(bookDtoWithoutCategoryIds1);
+        when(bookMapper.toDtoWithoutCategories(book1)).thenReturn(bookDtoWithoutCategoryIds1);
+        when(bookMapper.toDtoWithoutCategories(book2)).thenReturn(bookDtoWithoutCategoryIds2);
 
+        List<BookDtoWithoutCategoryIds> actual = bookServiceImpl.findAllByCategoryId(categoryId, pageable);
 
+        assertEquals(actual.size(), expected.size());
+        verify(bookRepository, times(1)).findAllByCategoryId(any(), any());
+        verify(bookMapper, times(2)).toDtoWithoutCategories(any());
     }
 
-//////////////////////////////////////////////////////////////////////////////
     private CreateBookRequestDto crateBookRequestDto() {
         CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
         bookRequestDto.setAuthor("Taras Shevchenko");
@@ -246,6 +245,7 @@ public class BookServiceTest {
         book.setCategories(Set.of(category));
         book.setCoverImage("11223344");
         book.setDescription("Interesting");
+        book.setDeleted(false);
         return book;
     }
 
@@ -267,6 +267,7 @@ public class BookServiceTest {
         category.setId(1L);
         category.setName("Novel");
         category.setDescription("Interesting book");
+        category.setDeleted(false);
         return category;
     }
 
