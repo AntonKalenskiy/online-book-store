@@ -1,26 +1,18 @@
 package com.springframework.boot.onlinebookstore.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.springframework.boot.onlinebookstore.model.Book;
-import com.springframework.boot.onlinebookstore.model.Category;
 import com.springframework.boot.onlinebookstore.repository.book.BookRepository;
 import com.springframework.boot.onlinebookstore.repository.category.CategoryRepository;
-import lombok.RequiredArgsConstructor;
-import org.junit.Assert;
-import org.junit.jupiter.api.*;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
-
-
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -45,8 +37,8 @@ public class BookRepositoryTest {
     )
     @Sql(
             scripts = {
-                    "classpath:database/books/delete-twobooks-from-books-table.sql",
-                    "classpath:database/categories/delete-category-from-category-table.sql"
+                    "classpath:database/books/delete-books-from-books-table.sql",
+                    "classpath:database/categories/delete-category-from-categories-table.sql"
             }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     void findAllByCategoryId_ValidCategoryId_ReturnListOfTwoBook() {
@@ -65,8 +57,8 @@ public class BookRepositoryTest {
             }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
     @Sql(
-            scripts = {"classpath:database/books/delete-onebook-from-book-table.sql",
-                    "classpath:database/categories/delete-category-from-category-table.sql"},
+            scripts = {"classpath:database/books/delete-books-from-books-table.sql",
+                    "classpath:database/categories/delete-category-from-categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     void findAllByCategoryId_ValidCategoryId_ReturnListOfOneBook() {

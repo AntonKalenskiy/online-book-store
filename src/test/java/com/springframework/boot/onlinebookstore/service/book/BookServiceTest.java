@@ -58,19 +58,17 @@ public class BookServiceTest {
         Book book = createBook();
         Category category = createCategory();
         BookDto expected = createBookDto();
-
         when(bookMapper.toModel(bookRequestDto)).thenReturn(book);
-        when(categoryRepository.findAllById(List.of(1L))).thenReturn(List.of(category));
+        when(categoryRepository.findAllById(any())).thenReturn(List.of(category));
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expected);
-
         //when
         BookDto actual = bookServiceImpl.save(bookRequestDto);
         //then
         assertEquals(actual.getAuthor(), expected.getAuthor());
         verify(bookRepository).save(book);
         verify(bookMapper).toModel(bookRequestDto);
-        verify(categoryRepository).findById(anyLong());
+        verify(categoryRepository).findAllById(any());
         verify(bookMapper).toDto(book);
         verifyNoMoreInteractions(bookRepository, categoryRepository, bookMapper);
     }
@@ -98,7 +96,7 @@ public class BookServiceTest {
         //Then
         assertEquals(actual, expected.size());
         verify(bookMapper, times(2)).toDto(any());
-        verify(bookRepository, times(1)).findAll(pageable);
+        verify(bookRepository).findAll(pageable);
         verifyNoMoreInteractions(bookMapper, bookRepository);
     }
 
@@ -115,10 +113,8 @@ public class BookServiceTest {
         BookDto actual = bookServiceImpl.findById(book.getId());
         //then
         assertEquals(actual.getAuthor(), expected.getAuthor());
-        assertEquals(actual.getId(), expected.getId());
-        assertEquals(actual.getCategoryIds(), expected.getCategoryIds());
-        assertEquals(actual.getPrice(), expected.getPrice());
-        assertEquals(actual.getIsbn(), expected.getIsbn());
+        verify(bookRepository).findById(anyLong());
+        verify(bookMapper).toDto(book);
     }
 
     @Test
@@ -134,6 +130,7 @@ public class BookServiceTest {
         String actual = exception.getMessage();
         //then
         assertEquals(expected, actual);
+        verify(bookRepository).findById(bookId);
     }
 
     @Test

@@ -44,7 +44,6 @@ public class CategoryServiceTest {
         CreateCategoryRequestDto requestDto = createCategoryRequestDto();
         Category category = createCategory();
         CategoryDto expected = createCategoryDto();
-
         when(categoryMapper.toEntity(requestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
