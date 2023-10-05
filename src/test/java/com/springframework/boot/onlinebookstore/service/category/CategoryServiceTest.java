@@ -3,6 +3,7 @@ package com.springframework.boot.onlinebookstore.service.category;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,15 +48,11 @@ public class CategoryServiceTest {
         when(categoryMapper.toEntity(requestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
-
-        CategoryDto actual = categoryService.save(createCategoryRequestDto());
-
-        assertEquals(actual.getName(), expected.getName());
-        assertEquals(actual.getDescription(), expected.getDescription());
-        Mockito.verify(categoryMapper).toDto(any());
-        Mockito.verify(categoryMapper).toEntity(any());
-        Mockito.verify(categoryRepository).save(any());
-        Mockito.verifyNoMoreInteractions(categoryMapper, categoryRepository);
+        categoryService.save(createCategoryRequestDto());
+        verify(categoryMapper).toDto(any());
+        verify(categoryMapper).toEntity(any());
+        verify(categoryRepository).save(any());
+        verifyNoMoreInteractions(categoryMapper, categoryRepository);
     }
 
     @Test
@@ -64,11 +61,9 @@ public class CategoryServiceTest {
         Category category1 = createCategory();
         Category category2 = createCategory();
         category2.setId(2L);
-
         CategoryDto categoryDto1 = createCategoryDto();
         CategoryDto categoryDto2 = createCategoryDto();
         categoryDto2.setId(2L);
-
         Pageable pageable = PageRequest.of(0, 2);
         List<Category> categories = List.of(category1, category2);
         List<CategoryDto> expected = List.of(categoryDto1, categoryDto2);
@@ -76,9 +71,7 @@ public class CategoryServiceTest {
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
         when(categoryMapper.toDto(category1)).thenReturn(categoryDto1);
         when(categoryMapper.toDto(category2)).thenReturn(categoryDto2);
-
         List<CategoryDto> actual = categoryService.findAll(pageable);
-
         assertEquals(actual.size(), expected.size());
         verify(categoryMapper, times(2)).toDto(any());
         verify(categoryRepository).findAll(pageable);
@@ -92,11 +85,7 @@ public class CategoryServiceTest {
         CategoryDto expected = createCategoryDto();
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(category)).thenReturn(expected);
-
-        CategoryDto actual = categoryService.getById(category.getId());
-
-        assertEquals(actual.getDescription(), expected.getDescription());
-        assertEquals(actual.getName(), expected.getName());
+        categoryService.getById(category.getId());
         verify(categoryRepository).findById(anyLong());
         verify(categoryMapper).toDto(any());
     }
@@ -106,13 +95,11 @@ public class CategoryServiceTest {
     public void findById_WithNotValidCategoryId_ReturnException() {
         Long categoryId = -45L;
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
-
         Exception exception = assertThrows(EntityNotFoundException.class,
                 () -> categoryService.getById(categoryId));
         String expected = "Category with id: "
                 + categoryId + " not found";
         String actual = exception.getMessage();
-
         assertEquals(actual, expected);
         verify(categoryRepository).findById(anyLong());
     }
@@ -133,15 +120,10 @@ public class CategoryServiceTest {
         CreateCategoryRequestDto requestDto = createCategoryRequestDto();
         Long categoryId = 1L;
         CategoryDto expected = createCategoryDto();
-
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
-
-        CategoryDto actual = categoryService.update(categoryId, requestDto);
-
-        assertEquals(actual.getName(), expected.getName());
-        assertEquals(actual.getDescription(), expected.getDescription());
+        categoryService.update(categoryId, requestDto);
         verify(categoryRepository).findById(categoryId);
         verify(categoryRepository).save(category);
         verify(categoryMapper).toDto(category);

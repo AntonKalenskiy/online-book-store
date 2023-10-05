@@ -25,8 +25,4 @@ public interface BookMapper {
                 .map(Category::getId).toList();
         bookDto.setCategoryIds(categoryIds);
     }
-    //        @Named("bookFromId")
-    //        default Book bookFromId(Long id) {
-    //
-    //        }
 }
