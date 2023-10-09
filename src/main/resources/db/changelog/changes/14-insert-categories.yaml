@@ -28,4 +28,31 @@ databaseChangeLog:
             columns:
               - column: { name: name, value: "Fantasy" }
               - column: { name: description, value: "Fantasy books" }
+      rollback:
+        - delete:
+            tableName: categories
+            where:
+              - column: name
+                value: "Fiction"
+        - delete:
+            tableName: categories
+            where:
+              - column: name
+                value: "Mystery"
+        - delete:
+            tableName: categories
+            where:
+              - column: name
+                value: "Science Fiction"
+        - delete:
+            tableName: categories
+            where:
+              - column: name
+                value: "Non-Fiction"
+        - delete:
+            tableName: categories
+            where:
+              - column: name
+                value: "Fantasy"
+
 
