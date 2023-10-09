@@ -3,12 +3,12 @@ package com.springframework.boot.onlinebookstore.service.category;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
 import com.springframework.boot.onlinebookstore.dto.category.CategoryDto;
 import com.springframework.boot.onlinebookstore.dto.category.CreateCategoryRequestDto;
 import com.springframework.boot.onlinebookstore.dto.mapper.CategoryMapper;
@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -66,11 +65,11 @@ public class CategoryServiceTest {
         categoryDto2.setId(2L);
         Pageable pageable = PageRequest.of(0, 2);
         List<Category> categories = List.of(category1, category2);
-        List<CategoryDto> expected = List.of(categoryDto1, categoryDto2);
         Page<Category> categoryPage = new PageImpl<>(categories, pageable, categories.size());
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
         when(categoryMapper.toDto(category1)).thenReturn(categoryDto1);
         when(categoryMapper.toDto(category2)).thenReturn(categoryDto2);
+        List<CategoryDto> expected = List.of(categoryDto1, categoryDto2);
         List<CategoryDto> actual = categoryService.findAll(pageable);
         assertEquals(actual.size(), expected.size());
         verify(categoryMapper, times(2)).toDto(any());
@@ -117,12 +116,12 @@ public class CategoryServiceTest {
     @DisplayName("Display if there is update category by id and categoryRequestDto")
     public void update_WithValidIdAndRequest_ReturnValidCategoryDto() {
         Category category = createCategory();
-        CreateCategoryRequestDto requestDto = createCategoryRequestDto();
         Long categoryId = 1L;
         CategoryDto expected = createCategoryDto();
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
+        CreateCategoryRequestDto requestDto = createCategoryRequestDto();
         categoryService.update(categoryId, requestDto);
         verify(categoryRepository).findById(categoryId);
         verify(categoryRepository).save(category);

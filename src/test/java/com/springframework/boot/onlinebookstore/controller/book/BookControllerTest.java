@@ -4,13 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springframework.boot.onlinebookstore.dto.book.BookDto;
 import com.springframework.boot.onlinebookstore.dto.book.CreateBookRequestDto;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import lombok.SneakyThrows;
@@ -52,7 +52,8 @@ public class BookControllerTest {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource("database/categories/add-firstcategory-to-categories-table.sql")
+                    new ClassPathResource("database/categories"
+                            + "/add-firstcategory-to-categories-table.sql")
             );
             ScriptUtils.executeSqlScript(
                     connection,
@@ -78,7 +79,8 @@ public class BookControllerTest {
             );
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource("database/categories/delete-category-from-categories-table.sql")
+                    new ClassPathResource("database/categories"
+                            + "/delete-category-from-categories-table.sql")
             );
         }
     }
@@ -97,7 +99,8 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        BookDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BookDto.class);
+        BookDto actual = objectMapper.readValue(mvcResult.getResponse()
+                .getContentAsString(), BookDto.class);
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(actual, expected, "id");
     }
@@ -118,7 +121,8 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        BookDto[] actual = objectMapper.readValue(result.getResponse().getContentAsByteArray(), BookDto[].class);
+        BookDto[] actual = objectMapper.readValue(result.getResponse()
+                .getContentAsByteArray(), BookDto[].class);
         assertNotNull(actual);
         assertEquals(expected.size(), actual.length);
         assertEquals(expected.get(0).getIsbn(), actual[0].getIsbn());
@@ -136,7 +140,8 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        BookDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BookDto.class);
+        BookDto actual = objectMapper.readValue(mvcResult.getResponse()
+                .getContentAsString(), BookDto.class);
         assertNotNull(actual);
         assertEquals(actual.getTitle(), expected.getTitle());
         assertEquals(actual.getIsbn(), expected.getIsbn());
@@ -173,7 +178,8 @@ public class BookControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BookDto.class);
+        BookDto actual = objectMapper.readValue(mvcResult.getResponse()
+                .getContentAsString(), BookDto.class);
         assertNotNull(actual);
         assertEquals(actual.getTitle(), expected.getTitle());
         assertEquals(actual.getIsbn(), expected.getIsbn());
@@ -200,7 +206,8 @@ public class BookControllerTest {
                 MockMvcRequestBuilders.get("/books/search" + params))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookDto[] bookDtos = objectMapper.readValue(mvcResult.getResponse().getContentAsByteArray(), BookDto[].class);
+        BookDto[] bookDtos = objectMapper.readValue(mvcResult.getResponse()
+                .getContentAsByteArray(), BookDto[].class);
         assertNotNull(bookDtos);
         assertEquals(2, bookDtos.length);
     }

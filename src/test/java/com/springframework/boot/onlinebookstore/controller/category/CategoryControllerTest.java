@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springframework.boot.onlinebookstore.dto.category.CategoryDto;
 import com.springframework.boot.onlinebookstore.dto.category.CreateCategoryRequestDto;
@@ -50,7 +51,8 @@ public class CategoryControllerTest {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource("database/categories/add-firstcategory-to-categories-table.sql")
+                    new ClassPathResource("database/categories"
+                            + "/add-firstcategory-to-categories-table.sql")
             );
         }
     }
@@ -68,7 +70,8 @@ public class CategoryControllerTest {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource("database/categories/delete-category-from-categories-table.sql")
+                    new ClassPathResource("database/categories"
+                            + "/delete-category-from-categories-table.sql")
             );
         }
     }
@@ -87,7 +90,8 @@ public class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        CategoryDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CategoryDto.class);
+        CategoryDto actual = objectMapper.readValue(mvcResult.getResponse()
+                .getContentAsString(), CategoryDto.class);
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(actual, expected);
     }
@@ -103,7 +107,8 @@ public class CategoryControllerTest {
                 MockMvcRequestBuilders.get("/categories" + params))
                 .andExpect(status().isOk())
                 .andReturn();
-        CategoryDto[] actual = objectMapper.readValue(result.getResponse().getContentAsByteArray(), CategoryDto[].class);
+        CategoryDto[] actual = objectMapper.readValue(result.getResponse()
+                .getContentAsByteArray(), CategoryDto[].class);
         assertEquals(expected.size(), actual.length);
         assertEquals(expected.get(0).getName(), actual[0].getName());
     }
@@ -119,7 +124,8 @@ public class CategoryControllerTest {
                                 categoryId))
                 .andExpect(status().isOk())
                 .andReturn();
-        CategoryDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CategoryDto.class);
+        CategoryDto actual = objectMapper.readValue(mvcResult.getResponse()
+                .getContentAsString(), CategoryDto.class);
         assertNotNull(actual);
         assertEquals(actual.getName(), expected.getName());
         assertEquals(actual.getDescription(), expected.getDescription());
@@ -128,7 +134,8 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("Get category by not exist id")
     @WithMockUser(roles = "USER")
-    void givenCategoryDtoId_whenGetCategoryById_thenReturnEntityNotFoundException() throws Exception {
+    void givenCategoryDtoId_whenGetCategoryById_thenReturnEntityNotFoundException()
+            throws Exception {
         Long notExistCategoryId = 777L;
         MvcResult mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.get("/categories/{categoryId}",
@@ -144,7 +151,8 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("Update category")
     @WithMockUser(roles = "ADMIN")
-    void givenCreateCategoryRequest_whenUpdateCategoryById_thenReturnChangedCategoryDto() throws Exception {
+    void givenCreateCategoryRequest_whenUpdateCategoryById_thenReturnChangedCategoryDto()
+            throws Exception {
         Long categoryId = 1L;
         CreateCategoryRequestDto categoryRequestDto = createCategoryRequestDto();
         categoryRequestDto.setName("Fantasy");
@@ -157,7 +165,8 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        CategoryDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CategoryDto.class);
+        CategoryDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                CategoryDto.class);
         assertNotNull(actual);
         assertEquals(actual.getName(), expected.getName());
         assertEquals(actual.getDescription(), expected.getDescription());

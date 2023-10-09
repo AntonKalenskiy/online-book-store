@@ -198,7 +198,7 @@
 					<linkXRef>false</linkXRef>
 					<sourceDirectories>
 						<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-<!--						<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>-->
+						<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
 					</sourceDirectories>
 				</configuration>
 			</plugin>

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
 import com.springframework.boot.onlinebookstore.dto.book.BookDto;
 import com.springframework.boot.onlinebookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.springframework.boot.onlinebookstore.dto.book.BookSearchParameters;
@@ -94,7 +95,6 @@ public class BookServiceTest {
         verifyNoMoreInteractions(bookMapper, bookRepository);
     }
 
-
     @Test
     @DisplayName("Verify if correct bookDto is returned from DB")
     public void findById_WithValidBookId_ShouldReturnValidBookDto() {
@@ -134,7 +134,6 @@ public class BookServiceTest {
     @DisplayName("Verify if there is update book by id and bookRequestDto")
     public void updateById_WithValidIdAndRequest_ReturnValidBookDto() {
         Book book = createBook();
-        CreateBookRequestDto bookRequestDto = crateBookRequestDto();
         Long bookId = 1L;
         BookDto bookDto = createBookDto();
         Category category = createCategory();
@@ -142,6 +141,7 @@ public class BookServiceTest {
         when(categoryRepository.findAllById(any())).thenReturn(List.of(category));
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(bookDto);
+        CreateBookRequestDto bookRequestDto = crateBookRequestDto();
         bookServiceImpl.updateById(bookId, bookRequestDto);
         verify(bookRepository, times(1)).findById(bookId);
         verify(bookRepository, times(1)).save(book);
@@ -181,13 +181,15 @@ public class BookServiceTest {
         BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds1 = createBookDtoWithoutCategoryIds();
         BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds2 = createBookDtoWithoutCategoryIds();
         List<Book> booksWithOneCategory = List.of(book1, book2);
-        List<BookDtoWithoutCategoryIds> expected = List.of(bookDtoWithoutCategoryIds1,
-                bookDtoWithoutCategoryIds2);
         Pageable pageable = PageRequest.of(0, 2);
-        when(bookRepository.findAllByCategoryId(categoryId, pageable)).thenReturn(booksWithOneCategory);
+        when(bookRepository.findAllByCategoryId(categoryId, pageable))
+                .thenReturn(booksWithOneCategory);
         when(bookMapper.toDtoWithoutCategories(book1)).thenReturn(bookDtoWithoutCategoryIds1);
         when(bookMapper.toDtoWithoutCategories(book2)).thenReturn(bookDtoWithoutCategoryIds2);
-        List<BookDtoWithoutCategoryIds> actual = bookServiceImpl.findAllByCategoryId(categoryId, pageable);
+        List<BookDtoWithoutCategoryIds> expected = List.of(bookDtoWithoutCategoryIds1,
+                bookDtoWithoutCategoryIds2);
+        List<BookDtoWithoutCategoryIds> actual = bookServiceImpl
+                .findAllByCategoryId(categoryId, pageable);
         assertEquals(actual.size(), expected.size());
         verify(bookRepository, times(1)).findAllByCategoryId(any(), any());
         verify(bookMapper, times(2)).toDtoWithoutCategories(any());
