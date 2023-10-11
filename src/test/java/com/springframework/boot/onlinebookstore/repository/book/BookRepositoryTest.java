@@ -1,4 +1,4 @@
-package com.springframework.boot.onlinebookstore.repository;
+package com.springframework.boot.onlinebookstore.repository.book;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
