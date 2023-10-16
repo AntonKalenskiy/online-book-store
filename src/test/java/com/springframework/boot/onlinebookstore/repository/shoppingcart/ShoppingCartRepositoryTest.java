@@ -1,19 +1,20 @@
 package com.springframework.boot.onlinebookstore.repository.shoppingcart;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.springframework.boot.onlinebookstore.model.Role;
 import com.springframework.boot.onlinebookstore.model.ShoppingCart;
 import com.springframework.boot.onlinebookstore.model.User;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -39,11 +40,12 @@ public class ShoppingCartRepositoryTest {
     )
     @Sql(
             scripts = {
-                 "classpath:database/cartitem/delete-cartitems-from-cartitems-table.sql",
-                 "classpath:database/shoppingcart/delete-shoppingcarts-from-shoppingcart-table.sql",
-                 "classpath:database/user/delete-user-from-users-table.sql",
-                 "classpath:database/books/delete-books-from-books-table.sql",
-                 "classpath:database/categories/delete-category-from-categories-table.sql"
+                    "classpath:database/cartitem/delete-cartitems-from-cartitems-table.sql",
+                    "classpath:database/shoppingcart"
+                            + "/delete-shoppingcarts-from-shoppingcart-table.sql",
+                    "classpath:database/user/delete-user-from-users-table.sql",
+                    "classpath:database/books/delete-books-from-books-table.sql",
+                    "classpath:database/categories/delete-category-from-categories-table.sql"
             }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     void findShoppingCartByUser_ValidUser_ReturnShoppingCart() {
@@ -69,7 +71,8 @@ public class ShoppingCartRepositoryTest {
     @Sql(
             scripts = {
                     "classpath:database/cartitem/delete-cartitems-from-cartitems-table.sql",
-                    "classpath:database/shoppingcart/delete-shoppingcarts-from-shoppingcart-table.sql",
+                    "classpath:database/shoppingcart"
+                            + "/delete-shoppingcarts-from-shoppingcart-table.sql",
                     "classpath:database/user/delete-user-from-users-table.sql",
                     "classpath:database/books/delete-books-from-books-table.sql",
                     "classpath:database/categories/delete-category-from-categories-table.sql"

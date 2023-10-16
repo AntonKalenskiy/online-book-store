@@ -7,13 +7,19 @@ import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
 import com.springframework.boot.onlinebookstore.dto.cartitem.CartItemDto;
 import com.springframework.boot.onlinebookstore.dto.cartitem.CreateCartItemRequestDto;
 import com.springframework.boot.onlinebookstore.dto.mapper.ShoppingCartMapper;
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.CreateShoppingCartRequestDto;
 import com.springframework.boot.onlinebookstore.dto.shoppingcart.ShoppingCartDto;
 import com.springframework.boot.onlinebookstore.exception.EntityNotFoundException;
-import com.springframework.boot.onlinebookstore.model.*;
+import com.springframework.boot.onlinebookstore.model.Book;
+import com.springframework.boot.onlinebookstore.model.CartItem;
+import com.springframework.boot.onlinebookstore.model.Category;
+import com.springframework.boot.onlinebookstore.model.Role;
+import com.springframework.boot.onlinebookstore.model.ShoppingCart;
+import com.springframework.boot.onlinebookstore.model.User;
 import com.springframework.boot.onlinebookstore.repository.book.BookRepository;
 import com.springframework.boot.onlinebookstore.repository.cartitem.CartItemRepository;
 import com.springframework.boot.onlinebookstore.repository.shoppingcart.ShoppingCartRepository;
@@ -60,9 +66,7 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("Verify adding book to shopping cart with exist cart item")
-    public void givenShoppingCartWithBook_whenAddBookToCart_thenReturnShoppingCartWithNewNumberOfBook() {
-        CreateShoppingCartRequestDto shoppingCartRequestDto
-                = createShoppingCartRequestDto();
+    public void givenShoppingCartWithBook_whenAddBookToCart_thenReturnNewShoppingCart() {
         User user = createUser();
         CartItem cartItem = createCartItem();
         ShoppingCart shoppingCart = createShoppingCart(user, cartItem);
@@ -70,6 +74,8 @@ public class ShoppingCartServiceTest {
         when(shoppingCartRepository.findByUser(user)).thenReturn(Optional.of(shoppingCart));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
         when(shoppingCartMapper.toDto(shoppingCart)).thenReturn(shoppingCartDto);
+        CreateShoppingCartRequestDto shoppingCartRequestDto
+                = createShoppingCartRequestDto();
         shoppingCartServiceImpl.addBookToCart(shoppingCartRequestDto, user);
         verify(shoppingCartRepository).findByUser(user);
         verify(cartItemRepository).save(cartItem);
@@ -81,13 +87,10 @@ public class ShoppingCartServiceTest {
     @Test
     @DisplayName("Verify adding book to empty shopping cart")
     public void givenEmptyShoppingCart_whenAddBookToCart_thenReturnShoppingCartWithBook() {
-        CreateShoppingCartRequestDto shoppingCartRequestDto
-                = createShoppingCartRequestDto();
         User user = createUser();
         ShoppingCart shoppingCart = createEmptyShoppingCart(user);
         Book book = createBook();
         CartItem cartItem = createCartItem();
-        ShoppingCartDto shoppingCartDto = createShoppingCartDto();
         when(shoppingCartRepository.findByUser(user))
                 .thenReturn(Optional.of(shoppingCart));
         when(bookRepository.findById(anyLong()))
@@ -96,6 +99,9 @@ public class ShoppingCartServiceTest {
                 .thenReturn(cartItem);
         when(shoppingCartRepository.save(shoppingCart))
                 .thenReturn(shoppingCart);
+        CreateShoppingCartRequestDto shoppingCartRequestDto
+                = createShoppingCartRequestDto();
+        ShoppingCartDto shoppingCartDto = createShoppingCartDto();
         when(shoppingCartMapper.toDto(shoppingCart))
                 .thenReturn(shoppingCartDto);
         shoppingCartServiceImpl.addBookToCart(shoppingCartRequestDto, user);
@@ -109,10 +115,7 @@ public class ShoppingCartServiceTest {
     @Test
     @DisplayName("Update quantity of books in shopping cart")
     public void givenShoppingCartWithActualCartItem_whenUpdateCart_thenReturnUpdatedShoppingCart() {
-        CreateCartItemRequestDto cartItemRequestDto
-                = createCartItemRequestDto();
         User user = createUser();
-        Long cartItemId = 1L;
         CartItem cartItem = createCartItem();
         cartItem.setQuantity(10);
         ShoppingCartDto shoppingCartDto = createShoppingCartDto();
@@ -123,6 +126,9 @@ public class ShoppingCartServiceTest {
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
         when(shoppingCartMapper.toDto(shoppingCart))
                 .thenReturn(shoppingCartDto);
+        CreateCartItemRequestDto cartItemRequestDto
+                = createCartItemRequestDto();
+        Long cartItemId = 1L;
         shoppingCartServiceImpl.updateBookQuantity(cartItemId,
                 cartItemRequestDto, user);
         verify(shoppingCartRepository).findByUser(user);

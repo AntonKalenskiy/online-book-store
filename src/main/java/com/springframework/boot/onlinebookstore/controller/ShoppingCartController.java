@@ -53,7 +53,7 @@ public class ShoppingCartController {
         return shoppingCartService.addBookToCart(shoppingCartRequestDto, user);
     }
 
-    @PutMapping("cart-items/{cartItemId}")
+    @PutMapping("/cart-items/{cartItemId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Update books quantity", description
             = "Update books quantity in cart item by id")
@@ -64,7 +64,7 @@ public class ShoppingCartController {
         return shoppingCartService.updateBookQuantity(cartItemId, requestDto, user);
     }
 
-    @DeleteMapping("cart-items/{cartItemId}")
+    @DeleteMapping("/cart-items/{cartItemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Delete cart item", description
