@@ -1,9 +1,8 @@
-package com.springframework.boot.onlinebookstore.repository;
+package com.springframework.boot.onlinebookstore.repository.book;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.springframework.boot.onlinebookstore.model.Book;
-import com.springframework.boot.onlinebookstore.repository.book.BookRepository;
 import com.springframework.boot.onlinebookstore.repository.category.CategoryRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
